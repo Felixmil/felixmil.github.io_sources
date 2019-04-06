@@ -15,6 +15,7 @@ pygmentscodefencesguesssyntax = true
 
 disqusShortname = "yourdiscussshortname"
 
+
 [params]
     author = "Felix MIL"
     description = "Felix MIL's personal website"
@@ -42,6 +43,9 @@ disqusShortname = "yourdiscussshortname"
 
     # Custom CSS
     custom_css = []
+    
+    #files ignore
+    ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 [taxonomies]
   series = "series"
