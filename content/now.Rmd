@@ -10,16 +10,16 @@ title: Now
 data_raw <- c('
 
   - 2019-04-02: Rebuilt this website using blogdown
-  - 2019-03-06: First requests on Hadoop cluster
+  - 2019-03-06: First requests on Hadoop clusters
   - 2019-02-23: Attended SatRday in Paris
   _______
   
   - 2018-11-15: Installed Python on my professional computer
-  - 2018-10-01: Got my first job as Data Scientist
-  - 2018-08-25: Built my first (actualy useful) Shiny App
-  - 2018-06-22: Built my first quantitative predictive model estimating Fibrinogen concentration in plasma samples
+  - 2018-10-01: First job as Data Scientist
+  - 2018-08-25: First (actualy useful) Shiny App
+  - 2018-06-22: First quantitative predictive model estimating Fibrinogen concentration in plasma samples
   - 2018-05-14: Went to Budapest for eRum
-  - 2018-02-04: First html reproducible analysis report using Rmarkdown
+  - 2018-02-04: First reproducible analysis report using Rmarkdown
   
   _______
   
@@ -73,7 +73,7 @@ ggplot(dates_df, aes(x=0, y=month_date_range))+
                            )+
   geom_vline(xintercept=0,size=2.5, color="white")+
   geom_vline(xintercept=0,size=1, color="grey20")+
-  geom_label(aes(label=year), nudge_x = -0.55, size=6) +
+  geom_label(aes(label=year),fill='#fafafa', nudge_x = -0.55, size=6) +
   geom_text(aes(label=month), nudge_x = -0.26,hjust=0) +
   geom_point(aes(color=rank(month_date_range)),size=6) +
   lims(x=c(-1,3))+
