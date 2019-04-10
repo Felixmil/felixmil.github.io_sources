@@ -23,7 +23,8 @@ data_raw <- c('
   
   _______
   
-  - 2017-07-02: Installed R on my personnal computer')
+  - 2017-07-02: Installed R on my personnal computer
+')
 
 #Data Prep
 
@@ -34,6 +35,7 @@ data <- read_lines(data_raw)
 dates <- c()
 milestones <- c()
 
+#TODO: Use purr::map()
 for(i in c(1:length(data))){
   date = str_extract(data[i],'[:digit:]{4}-[:digit:]{2}-[:digit:]{2}')
   milestone = str_extract(data[i],'(?<=\\: ).*')
