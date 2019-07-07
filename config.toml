@@ -1,5 +1,8 @@
-baseurl = "http://www.felixmil.github.io"
+baseurl = "http://felixmil.github.io"
 title = "Felix MIL"
+publishDir = "../felixmil.github.io"
+
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 theme = "hugo-coder"
 
@@ -16,13 +19,14 @@ pygmentscodefencesguesssyntax = true
 disqusShortname = "yourdiscussshortname"
 
 
+
 [params]
     author = "Felix MIL"
     description = "Felix MIL's personal website"
     keywords = "blog,developer,personal"
     info = "Biotech and Data Scientist"
-    avatarurl = "images/me.jpeg"
-    favicon_32 = "images/fav_32x32.png"
+    #avatarurl = "images/me.jpeg"
+    #favicon_32 = "images/fav_32x32.png"
     footercontent = "Enter a text here."
 
     dateformat = "January 2, 2006"
@@ -31,7 +35,7 @@ disqusShortname = "yourdiscussshortname"
     hideCopyright = false
 
     # Git Commit in Footer, uncomment the line below to enable it.
-    commit = "https://github.com/luizdepra/hugo-coder/tree/"
+    #commit = "https://github.com/luizdepra/hugo-coder/tree/"
 
     rtl = false
 
@@ -44,8 +48,6 @@ disqusShortname = "yourdiscussshortname"
     # Custom CSS
     custom_css = []
     
-    #files ignore
-    ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 [taxonomies]
   series = "series"

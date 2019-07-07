@@ -1,95 +1,22 @@
 ---
 slug: now
-title: Now
 ---
+# Now
 
+> I am working as a Data Scientist in a team dedicated to **optimizing processes and supporting product development** using **data analysis** in a **haemostatis** (blood coagulation health) biotechnology company in France: [**Stago**](www.stago.com).  
+Our team is small but very diverse: electronicians, automation & engine engineers, fluid mechanics Dr. and a **biotechnologist** [(that's me `r emo::ji('hug')`)](/about/index.html): I'm exploring different fields and learning on a daily basis. 
+>
+> Personnal reasons are pushing me to consider working at home, I engaged discussion with HR.
 
-```{r,echo=F, warning=F, message=F,fig.asp=1.618,fig.align='center',fig.width=7}
-# Milestones lists
+At the moment, my main challenges are:
 
-data_raw <- c('
+  - Perform large scale analysis on stago's automated analysers global performances and create **Rmarkdown** reports for **reproducible and comparative analysis** 
+  - Build a **predictive maintenance** model and performance monitoring tools for stago's automated analysers,
+  - Learn **python** for raw data processing tasks,
+  - Build an internal python module to ease up our different workflows based on our datalake,
+  - Promote the use of **Shiny** to give the power of data analysis to non-programmers colleagues,
+  - Promote **Data Culture** in others services (please, no more color-filled and merged cells excel files
+    
+# Passed challenges:
+  - `r emo::ji('white_check_mark')` Audit the development of a **Data Lake (Hadoop)** and make sure its structure fits my team's needs
 
-  - 2019-04-02: Rebuilt this website using blogdown
-  - 2019-03-06: First requests on Hadoop clusters
-  - 2019-02-23: Attended SatRday in Paris
-  _______
-  
-  - 2018-11-15: Installed Python on my professional computer
-  - 2018-10-01: First job as Data Scientist
-  - 2018-08-25: First (actualy useful) Shiny App
-  - 2018-06-22: First quantitative predictive model estimating Fibrinogen concentration in plasma samples
-  - 2018-05-14: Went to Budapest for eRum
-  - 2018-02-04: First reproducible analysis report using Rmarkdown
-  
-  _______
-  
-  - 2017-07-02: Installed R on my personnal computer
-')
-
-#Data Prep
-
-library(tidyverse)
-library(lubridate)
-
-data <- read_lines(data_raw)
-dates <- c()
-milestones <- c()
-
-#TODO: Use purr::map()
-for(i in c(1:length(data))){
-  date = str_extract(data[i],'[:digit:]{4}-[:digit:]{2}-[:digit:]{2}')
-  milestone = str_extract(data[i],'(?<=\\: ).*')
-  dates <- append(dates,date)
-  milestones <- append(milestones,milestone)
-}
-
-data_clean <- 
-  tibble(dates, milestones) %>% 
-  drop_na() %>%
-  mutate(dates = as.Date(dates),
-         milestones = str_replace(milestones,'(?<=.{45})[:blank:]','\n'))
-
-#Scales data
-
-month_buffer <- 2
-
-month_date_range <- seq(as.Date("2017-07-01"), max(data_clean$dates), by='month')
-month <- lubridate::month(month_date_range,label=T,locale="en_US")
-dates_df <- data.frame(month_date_range, month)
-dates_df <- dates_df %>% mutate(year = case_when(month=="Jan" ~ lubridate::year(month_date_range),
-                                          TRUE ~ as.numeric(NA)))
-
-# Plot 
-
-ggplot(dates_df, aes(x=0, y=month_date_range))+
-   ggrepel::geom_text_repel(data=data_clean, aes(x= 0, y=dates, label=milestones,size=4.5), 
-                           hjust=1,
-                           vjust=0.5,
-                           force = 0.5,
-                           box.padding = unit(0.15,"lines"),
-                           nudge_x = 3,
-                           direction = 'y',
-                           segment.colour = "grey40"
-                           )+
-  geom_vline(xintercept=0,size=2.5, color="white")+
-  geom_vline(xintercept=0,size=1, color="grey20")+
-  geom_label(aes(label=year),fontface='bold',fill='#fafafa', nudge_x = -0.55, size=6) +
-  geom_text(aes(label=month), color="grey20", fontface='bold',nudge_x = -0.26,hjust=0) +
-  geom_point(data=data_clean,aes(x=0,y=dates), color='grey20')+
-  geom_point(aes(color=rank(month_date_range)),size=6) +
-  lims(x=c(-0.6,3))+
-  theme_classic()+
-  theme(axis.line.y=element_blank(),
-        axis.text.y=element_blank(),
-        axis.title.x=element_blank(),
-        axis.title.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        axis.text.x =element_blank(),
-        axis.ticks.x =element_blank(),
-        axis.line.x =element_blank(),
-        legend.position = "bottom",
-        plot.background = element_rect(fill='#fafafa'),
-        panel.background = element_rect(fill = '#fafafa'),panel.border = element_blank())+
-  scale_color_viridis_c(direction = -1)+
-  guides(color=F, size=F)
-```
