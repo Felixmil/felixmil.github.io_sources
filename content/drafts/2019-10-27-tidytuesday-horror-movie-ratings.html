@@ -1,0 +1,339 @@
+---
+title: TidyTuesday - Horror movie ratings
+author: Felix MIL
+date: '2019-10-27'
+slug: tidytuesday-horror-movie-ratings
+categories: []
+tags: []
+description: ''
+externalLink: ''
+series: []
+---
+
+
+
+<div id="intro" class="section level2">
+<h2>Intro</h2>
+<p>This post is a submission for Tidy Tuesday 2019 W43: <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-10-22">Horror Movies Ratings</a></p>
+<div id="questions" class="section level3">
+<h3>Questions</h3>
+<ol style="list-style-type: decimal">
+<li>When horror movies became an important part of the movie industry ? My intuition is that horror movies became important (money-wise) in the 2000’s and something huge in the 2010’s, is it true ? Is it still a growing part of the industry ?</li>
+<li>I’m feeling like Northern America (especially the USA) is the most productive source of horror movies. Is it true ? Are the best movies produced in the USA ?</li>
+<li>Is there any ‘classical’ settings in horror movies plots ? As I want to train my Natural Language Processing skills, this seems like an interesting and challenging question.</li>
+<li>Is there any frequent location to shoot horror movies ?</li>
+</ol>
+</div>
+</div>
+<div id="preparation" class="section level2">
+<h2>Preparation</h2>
+<div id="loading-libraries" class="section level3">
+<h3>Loading libraries</h3>
+<pre class="r"><code>library(tidyverse)
+library(lubridate)
+library(forcats)
+library(countrycode)
+library(ggdark)</code></pre>
+</div>
+<div id="getting-the-data" class="section level3">
+<h3>Getting the data</h3>
+<pre class="r"><code>horror_movies &lt;- read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-22/horror_movies.csv&quot;)</code></pre>
+</div>
+<div id="cleaning-summarising-data" class="section level3">
+<h3>Cleaning &amp; summarising data</h3>
+<p>The provided data dictionnay is the following:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">variable</th>
+<th align="left">class</th>
+<th align="left">description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">title</td>
+<td align="left">character</td>
+<td align="left">Title of the movie</td>
+</tr>
+<tr class="even">
+<td align="left">genres</td>
+<td align="left">character</td>
+<td align="left">Movie Generes</td>
+</tr>
+<tr class="odd">
+<td align="left">release_date</td>
+<td align="left">character</td>
+<td align="left">Movie release date - day-month-year</td>
+</tr>
+<tr class="even">
+<td align="left">release_country</td>
+<td align="left">character</td>
+<td align="left">Release country</td>
+</tr>
+<tr class="odd">
+<td align="left">movie_rating</td>
+<td align="left">character</td>
+<td align="left">MPAA Rating</td>
+</tr>
+<tr class="even">
+<td align="left">review_rating</td>
+<td align="left">double</td>
+<td align="left">Movie rating (0 - 10)</td>
+</tr>
+<tr class="odd">
+<td align="left">movie_run_time</td>
+<td align="left">character</td>
+<td align="left">Movie run time (minutes)</td>
+</tr>
+<tr class="even">
+<td align="left">plot</td>
+<td align="left">character</td>
+<td align="left">Short plot description (raw text)</td>
+</tr>
+<tr class="odd">
+<td align="left">cast</td>
+<td align="left">character</td>
+<td align="left">Cast</td>
+</tr>
+<tr class="even">
+<td align="left">language</td>
+<td align="left">character</td>
+<td align="left">Language</td>
+</tr>
+<tr class="odd">
+<td align="left">filming_locations</td>
+<td align="left">character</td>
+<td align="left">Filming location</td>
+</tr>
+<tr class="even">
+<td align="left">budget</td>
+<td align="left">character</td>
+<td align="left">Budget (US Dollars)</td>
+</tr>
+</tbody>
+</table>
+<p>Let’s take a look at the actual data.</p>
+<pre class="r"><code>glimpse(horror_movies)</code></pre>
+<pre><code>## Rows: 3,328
+## Columns: 12
+## $ title             &lt;chr&gt; &quot;Gut (2012)&quot;, &quot;The Haunting of Mia Moss (2017)&quot;, &quot;S…
+## $ genres            &lt;chr&gt; &quot;Drama| Horror| Thriller&quot;, &quot;Horror&quot;, &quot;Horror&quot;, &quot;Com…
+## $ release_date      &lt;chr&gt; &quot;26-Oct-12&quot;, &quot;13-Jan-17&quot;, &quot;21-Oct-17&quot;, &quot;23-Apr-13&quot;,…
+## $ release_country   &lt;chr&gt; &quot;USA&quot;, &quot;USA&quot;, &quot;Canada&quot;, &quot;USA&quot;, &quot;USA&quot;, &quot;UK&quot;, &quot;USA&quot;, …
+## $ movie_rating      &lt;chr&gt; NA, NA, NA, &quot;NOT RATED&quot;, NA, NA, &quot;NOT RATED&quot;, NA, &quot;…
+## $ review_rating     &lt;dbl&gt; 3.9, NA, NA, 3.7, 5.8, NA, 5.1, 6.5, 4.6, 5.4, 5.3,…
+## $ movie_run_time    &lt;chr&gt; &quot;91 min&quot;, NA, NA, &quot;82 min&quot;, &quot;80 min&quot;, &quot;93 min&quot;, &quot;90…
+## $ plot              &lt;chr&gt; &quot;Directed by Elias. With Jason Vail, Nicholas Wilde…
+## $ cast              &lt;chr&gt; &quot;Jason Vail|Nicholas Wilder|Sarah Schoofs|Kirstiann…
+## $ language          &lt;chr&gt; &quot;English&quot;, &quot;English&quot;, &quot;English&quot;, &quot;English&quot;, &quot;Italia…
+## $ filming_locations &lt;chr&gt; &quot;New York, USA&quot;, NA, &quot;Sudbury, Ontario, Canada&quot;, &quot;B…
+## $ budget            &lt;chr&gt; NA, &quot;$30,000&quot;, NA, NA, NA, &quot;$3,400,000&quot;, NA, NA, NA…</code></pre>
+<div id="release_date" class="section level4">
+<h4><code>release_date</code></h4>
+<p>Temporal data is crucial to see the trends of Horror movies over time. In the first rows of the dataset, the format seems to be <code>%d-%b-%y</code> so <code>lubridate::dmy()</code> should be appropriate to parse release dates.</p>
+<pre class="r"><code>  horror_movies %&gt;%
+  transmute(release_date,
+            release_date_asDate = dmy(release_date))</code></pre>
+<pre><code>## # A tibble: 3,328 x 2
+##    release_date release_date_asDate
+##    &lt;chr&gt;        &lt;date&gt;             
+##  1 26-Oct-12    2012-10-26         
+##  2 13-Jan-17    2017-01-13         
+##  3 21-Oct-17    2017-10-21         
+##  4 23-Apr-13    2013-04-23         
+##  5 10-Apr-15    2015-04-10         
+##  6 2017         NA                 
+##  7 3-Jun-14     2014-06-03         
+##  8 25-Apr-15    2015-04-25         
+##  9 28-May-17    2017-05-28         
+## 10 7-Oct-16     2016-10-07         
+## # … with 3,318 more rows</code></pre>
+<p>seems to be ok, except some release date only contains year, let’s take care of them with <code>lubridate::parse_date_time()</code> which allow to pass several potentiel date formats.</p>
+<pre class="r"><code>horror_movies_clean &lt;- 
+  horror_movies %&gt;%
+  mutate(release_date = parse_date_time(release_date, orders = c(&quot;dmy&quot;, &quot;%y&quot;)))</code></pre>
+<p>Now we can get the time covered by the dataset:</p>
+<ul>
+<li>First date : 2012-01-01</li>
+<li>Last date : 2017-10-31</li>
+<li>Duration covered : 1.8403210^{8}</li>
+</ul>
+<p>Obviously, this dataset is not appropriate to observe trend on a large time scale. Question 1 cannot completely be answered. But we’ll still be able to see the latest trends.</p>
+</div>
+<div id="release_country" class="section level4">
+<h4><code>release_country</code></h4>
+<p>How many different countries are present in the dataset ?</p>
+<pre class="r"><code>n_distinct(horror_movies$release_country)</code></pre>
+<pre><code>## [1] 72</code></pre>
+<p>What are they ?</p>
+<pre class="r"><code>horror_movies %&gt;%
+  distinct(release_country) %&gt;%
+  arrange(release_country)</code></pre>
+<pre><code>## # A tibble: 72 x 1
+##    release_country
+##    &lt;chr&gt;          
+##  1 Argentina      
+##  2 Australia      
+##  3 Austria        
+##  4 Bahrain        
+##  5 Belarus        
+##  6 Belgium        
+##  7 Bolivia        
+##  8 Brazil         
+##  9 Bulgaria       
+## 10 Cambodia       
+## # … with 62 more rows</code></pre>
+<p>Apparently, there are no duplicated countries (potentially caused by typos or different denomination, for exemple UK &amp; United Kingdom)</p>
+<p>Add a variable <code>release_contient</code></p>
+<pre class="r"><code>horror_movies_clean &lt;- 
+  horror_movies_clean %&gt;%
+  mutate(release_continent=countrycode(release_country,
+                                       origin = &quot;country.name&quot;,
+                                       destination = &#39;continent&#39;))</code></pre>
+</div>
+<div id="review_rating" class="section level4">
+<h4><code>review_rating</code></h4>
+<p>The dataset dictionnay indicates this variable is a double between 0 and 10.</p>
+<pre class="r"><code>summary(horror_movies$review_rating)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##   1.000   4.000   5.000   5.077   6.100   9.800     252</code></pre>
+<p>Only 0.08% of movies are not reviewed</p>
+</div>
+<div id="budget" class="section level4">
+<h4><code>budget</code></h4>
+<p>#TODO Install <a href="https://rdrr.io/cran/fixerapi/">fixer</a>
+#TODO create a <a href="https://fixer.io/signup/free" class="uri">https://fixer.io/signup/free</a> account
+#TODO Parse currency symbol to ‘official’ currency strings (€ -&gt; ‘EUR’)
+#TODO Pass date to get robust dollar consersions with <a href="https://rdrr.io/cran/fixerapi/man/fixer_convert.html"><code>fixer_convert</code></a></p>
+<p>#TODO OR keep only the ones with $ notation</p>
+<pre class="r"><code>horror_movies_clean &lt;- 
+  horror_movies_clean %&gt;%
+  mutate(budget_clean=as.numeric(str_remove(str_remove_all(budget,&quot;,&quot;), &quot;\\$&quot;)))</code></pre>
+</div>
+</div>
+</div>
+<div id="observations" class="section level2">
+<h2>Observations</h2>
+<div id="number-of-movies-per-year" class="section level3">
+<h3>Number of movies per year</h3>
+<pre class="r"><code>horror_movies_clean %&gt;%
+  ggplot(aes(x = as.factor(year(release_date)))) +
+  geom_bar(aes(fill=fct_infreq(as.factor(release_continent))),color=&#39;white&#39;)+
+  scale_fill_brewer(type = &#39;qual&#39;,palette = 3)</code></pre>
+<p><img src="/drafts/2019-10-27-tidytuesday-horror-movie-ratings_files/figure-html/unnamed-chunk-11-1.png" width="60%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="repartition-of-horror-movies-throughout-the-month-of-the-years" class="section level3">
+<h3>Repartition of horror movies throughout the month of the years</h3>
+<pre class="r"><code>horror_movies_clean %&gt;%
+  ggplot(aes(x= month(release_date,label = T,locale=&quot;en_US&quot;)))+
+  geom_bar(aes(fill=release_continent))+
+  facet_grid(fct_rev(as.factor(year(release_date)))~.)+
+  scale_fill_brewer(type = &#39;qual&#39;,palette = 3)+
+  labs(y=&#39;# of horror movies&#39;, 
+       x=&#39;month&#39;,
+       fill=&#39;continent:&#39;)</code></pre>
+<p><img src="/drafts/2019-10-27-tidytuesday-horror-movie-ratings_files/figure-html/unnamed-chunk-12-1.png" width="60%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="number-of-movies-per-country-top-20" class="section level3">
+<h3>Number of movies per country (top 20)</h3>
+<pre class="r"><code>horror_movies_clean %&gt;%
+  ggplot(aes(fct_lump(fct_infreq(release_country),20)))+
+  geom_bar()+
+  theme(axis.text.x = element_text(angle=60, hjust = 1))</code></pre>
+<p><img src="/drafts/2019-10-27-tidytuesday-horror-movie-ratings_files/figure-html/unnamed-chunk-13-1.png" width="60%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="distribution-of-review-ratings" class="section level3">
+<h3>Distribution of review ratings</h3>
+<pre class="r"><code>horror_movies_clean %&gt;%
+  ggplot(aes(review_rating))+
+  geom_bar(binwidth = 0.2, color=&#39;white&#39;)</code></pre>
+<p><img src="/drafts/2019-10-27-tidytuesday-horror-movie-ratings_files/figure-html/unnamed-chunk-14-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>horror_movies_clean %&gt;%
+  ggplot(aes(y=review_rating,x=release_continent))+
+  geom_boxplot(outlier.color = NA, fill=NA,width=0.4)+
+  geom_jitter(width = 0.1, alpha=0.2, color=&#39;firebrick&#39;)+
+  
+  dark_theme_gray()+
+  labs(y=&#39;Reviews&#39;,
+       x=&#39;Continent&#39;)</code></pre>
+<p><img src="/drafts/2019-10-27-tidytuesday-horror-movie-ratings_files/figure-html/unnamed-chunk-15-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>horror_movies_clean %&gt;%
+  ggplot(aes(y=review_rating,x=release_continent))+
+  geom_jitter(width = 0.1, alpha=0.2, color=&#39;firebrick&#39;)+
+  geom_boxplot(outlier.color = NA, fill=NA,width=0.4)+
+  dark_theme_gray()+
+  labs(y=&#39;Reviews&#39;,
+       x=&#39;Continent&#39;)</code></pre>
+<p><img src="/drafts/2019-10-27-tidytuesday-horror-movie-ratings_files/figure-html/unnamed-chunk-16-1.png" width="60%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="budgets" class="section level3">
+<h3>Budgets</h3>
+<pre class="r"><code>horror_movies_clean %&gt;%
+filter(!is.na(review_rating),
+        budget_clean &gt; 0,
+       release_continent==&#39;Americas&#39;) %&gt;%
+  ggplot(aes(budget_clean,review_rating))+
+  geom_point(aes(color=release_continent))+
+  scale_color_brewer(type=&#39;qual&#39;,palette=3)+
+  coord_flip()</code></pre>
+<p><img src="/drafts/2019-10-27-tidytuesday-horror-movie-ratings_files/figure-html/unnamed-chunk-17-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>horror_movies_clean %&gt;%
+  group_by(release_continent, m=month(release_date, label = T, locale=&#39;EN_US&#39;)) %&gt;%
+  transmute(med_budget = median(budget_clean,na.rm = T)) %&gt;%
+  ggplot(aes(m, med_budget, color=release_continent))+
+  geom_point()+
+  dark_theme_grey()+
+  labs(y=&#39;Median Budget&#39;, x=&#39;Month&#39;,color=&#39;Continent&#39;)+
+  scale_y_continuous()</code></pre>
+<p><img src="/drafts/2019-10-27-tidytuesday-horror-movie-ratings_files/figure-html/unnamed-chunk-18-1.png" width="60%" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="take-away" class="section level2">
+<h2>Take Away</h2>
+<p>More movies are releases in October but budgets for theses movies are generally lower. Reviews are still higher ?</p>
+<pre class="r"><code>horror_movies_clean %&gt;%
+  filter(!is.na(budget_clean)) %&gt;%
+  ggplot(aes(month(release_date,label = T,locale = &#39;EN_US&#39;))) +
+  geom_bar(aes(fill=month(release_date,label = T,locale = &#39;EN_US&#39;)))+
+  dark_theme_gray()+
+  scale_fill_viridis_d(option=&#39;Plasma&#39;,direction = -1,begin=0.1, end = 0.5)+
+  guides(fill=FALSE)+
+  labs(x=&#39;Months&#39;, y=&#39;# of movies&#39;)</code></pre>
+<p><img src="/drafts/2019-10-27-tidytuesday-horror-movie-ratings_files/figure-html/unnamed-chunk-19-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>horror_movies_clean %&gt;%
+  filter(!is.na(budget_clean)) %&gt;%
+  mutate(m = month(release_date,label = T,locale = &#39;EN_US&#39;)) %&gt;%
+  ggplot(aes(m,review_rating)) +
+  geom_violin(aes(color=m),trim = TRUE)+
+  geom_dotplot(
+    aes(color= m,
+        fill = m),
+    binaxis = &quot;y&quot;, 
+    stackdir = &quot;center&quot;,
+    dotsize = 0.4
+  )+
+  dark_theme_gray()+
+  scale_fill_viridis_d(option=&#39;Plasma&#39;,direction = -1,begin=0.1, end = 0.5)+
+  scale_color_viridis_d(option=&#39;Plasma&#39;,direction = -1,begin=0.1,end = 0.5)+
+  guides(fill=FALSE, color = FALSE)+
+  geom_pointrange(stat = &quot;summary&quot;,
+    fun.y = median, 
+               fun.ymin = function(z) { quantile(z,0.25) }, 
+                fun.ymax =function(z) {quantile(z,0.75)},
+               color=&#39;firebrick&#39;)+
+  labs(x=&#39;Months&#39;,y=&#39;Reviews&#39;)</code></pre>
+<p><img src="/drafts/2019-10-27-tidytuesday-horror-movie-ratings_files/figure-html/unnamed-chunk-20-1.png" width="60%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>horror_movies_clean %&gt;%
+  filter(!is.na(budget_clean)) %&gt;%
+  mutate(m = month(release_date,label = T,locale = &#39;EN_US&#39;)) %&gt;%
+  ggplot() +
+  ggridges::geom_density_ridges(aes(x = budget_clean,y=fct_rev(as.factor(m)), fill=m), color=&#39;black&#39;)+
+  scale_x_log10()+
+  dark_theme_gray()+
+  scale_fill_viridis_d(option=&#39;Plasma&#39;,direction = -1,begin=0.1, end = 0.5)+
+  scale_color_viridis_d(option=&#39;Plasma&#39;,direction = -1,begin=0.1,end = 0.5)+
+  guides(fill=FALSE, color = FALSE)+
+  labs(x=&#39;log(Budgets)&#39;,y=&#39;Months&#39;)</code></pre>
+<p><img src="/drafts/2019-10-27-tidytuesday-horror-movie-ratings_files/figure-html/unnamed-chunk-21-1.png" width="60%" style="display: block; margin: auto;" /></p>
+</div>

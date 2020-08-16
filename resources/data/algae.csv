@@ -1,0 +1,153 @@
+Specy,Genus,Temperature,Light,GrowthRate
+Caloneis schroderi,Caloneis,5,5000,-0.01
+Caloneis schroderi,Caloneis,5,2500,-0.5
+Caloneis schroderi,Caloneis,10,5000,-0.1
+Caloneis schroderi,Caloneis,10,2500,0.25
+Caloneis schroderi,Caloneis,25,5000,0.28
+Caloneis schroderi,Caloneis,25,2500,0.3
+Caloneis schroderi,Caloneis,30,5000,0.38
+Caloneis schroderi,Caloneis,30,2500,0.29
+Chaetoceros gracilis,Chaetoceros,5,5000,-0.01
+Chaetoceros gracilis,Chaetoceros,5,2500,-0.05
+Chaetoceros gracilis,Chaetoceros,10,5000,0.16
+Chaetoceros gracilis,Chaetoceros,10,2500,0.07
+Chaetoceros gracilis,Chaetoceros,25,5000,0.52
+Chaetoceros gracilis,Chaetoceros,25,2500,0.39
+Chaetoceros gracilis,Chaetoceros,30,5000,0.62
+Chaetoceros gracilis,Chaetoceros,30,2500,0.73
+Chaetoceros simplex,Chaetoceros,5,5000,-0.06
+Chaetoceros simplex,Chaetoceros,5,2500,-0.01
+Chaetoceros simplex,Chaetoceros,10,5000,0.27
+Chaetoceros simplex,Chaetoceros,10,2500,0.55
+Chaetoceros simplex,Chaetoceros,25,5000,0.47
+Chaetoceros simplex,Chaetoceros,25,2500,0.52
+Chaetoceros simplex,Chaetoceros,30,5000,0.54
+Chaetoceros simplex,Chaetoceros,30,2500,0.63
+Chlorella ellipsoidea,Chlorella,5,5000,0.03
+Chlorella ellipsoidea,Chlorella,5,2500,0.02
+Chlorella ellipsoidea,Chlorella,10,5000,0.58
+Chlorella ellipsoidea,Chlorella,10,2500,0.53
+Chlorella ellipsoidea,Chlorella,25,5000,0.88
+Chlorella ellipsoidea,Chlorella,25,2500,0.85
+Chlorella ellipsoidea,Chlorella,30,5000,0.98
+Chlorella ellipsoidea,Chlorella,30,2500,0.94
+Chlorella stigmatophora,Chlorella,5,5000,0.01
+Chlorella stigmatophora,Chlorella,5,2500,0.24
+Chlorella stigmatophora,Chlorella,10,5000,0.36
+Chlorella stigmatophora,Chlorella,10,2500,0.24
+Chlorella stigmatophora,Chlorella,25,5000,0.78
+Chlorella stigmatophora,Chlorella,25,2500,0.56
+Chlorella stigmatophora,Chlorella,30,5000,0.66
+Chlorella stigmatophora,Chlorella,30,2500,0.39
+Chlorella vulgaris       (freshwater),Chlorella,5,5000,-0.25
+Chlorella vulgaris       (freshwater),Chlorella,5,2500,0
+Chlorella vulgaris       (freshwater),Chlorella,10,5000,0.21
+Chlorella vulgaris       (freshwater),Chlorella,10,2500,0.17
+Chlorella vulgaris       (freshwater),Chlorella,25,5000,0.68
+Chlorella vulgaris       (freshwater),Chlorella,25,2500,0.67
+Chlorella vulgaris       (freshwater),Chlorella,30,5000,-0.29
+Chlorella vulgaris       (freshwater),Chlorella,30,2500,-0.2
+Dunaniella tertiolecta,Dunaniella,5,5000,0.28
+Dunaniella tertiolecta,Dunaniella,5,2500,0.17
+Dunaniella tertiolecta,Dunaniella,10,5000,0.43
+Dunaniella tertiolecta,Dunaniella,10,2500,0.42
+Dunaniella tertiolecta,Dunaniella,25,5000,0.6
+Dunaniella tertiolecta,Dunaniella,25,2500,0.64
+Dunaniella tertiolecta,Dunaniella,30,5000,0.6
+Dunaniella tertiolecta,Dunaniella,30,2500,0.45
+Cyclotella sp. NUFP-9,Cyclotella,5,5000,0.16
+Cyclotella sp. NUFP-9,Cyclotella,5,2500,0.08
+Cyclotella sp. NUFP-9,Cyclotella,10,5000,0
+Cyclotella sp. NUFP-9,Cyclotella,10,2500,-0.1
+Cyclotella sp. NUFP-9,Cyclotella,25,5000,0
+Cyclotella sp. NUFP-9,Cyclotella,25,2500,0
+Cyclotella sp. NUFP-9,Cyclotella,30,5000,-0.18
+Cyclotella sp. NUFP-9,Cyclotella,30,2500,-0.19
+Hanzchia marina,Hanzchia,5,5000,-0.36
+Hanzchia marina,Hanzchia,5,2500,-0.07
+Hanzchia marina,Hanzchia,10,5000,-0.68
+Hanzchia marina,Hanzchia,10,2500,-0.21
+Hanzchia marina,Hanzchia,25,5000,0.21
+Hanzchia marina,Hanzchia,25,2500,0.15
+Hanzchia marina,Hanzchia,30,5000,0.11
+Hanzchia marina,Hanzchia,30,2500,0.06
+Isochrysis galbana,Isochrysis,5,5000,-0.57
+Isochrysis galbana,Isochrysis,5,2500,-0.07
+Isochrysis galbana,Isochrysis,10,5000,0.42
+Isochrysis galbana,Isochrysis,10,2500,0.25
+Isochrysis galbana,Isochrysis,25,5000,0.55
+Isochrysis galbana,Isochrysis,25,2500,0.55
+Isochrysis galbana,Isochrysis,30,5000,0.52
+Isochrysis galbana,Isochrysis,30,2500,0.51
+Isochrysis aff. galbana,Isochrysis,5,5000,-0.62
+Isochrysis aff. galbana,Isochrysis,5,2500,-0.67
+Isochrysis aff. galbana,Isochrysis,10,5000,
+Isochrysis aff. galbana,Isochrysis,10,2500,-0.14
+Isochrysis aff. galbana,Isochrysis,25,5000,0.78
+Isochrysis aff. galbana,Isochrysis,25,2500,0.81
+Isochrysis aff. galbana,Isochrysis,30,5000,0.76
+Isochrysis aff. galbana,Isochrysis,30,2500,0.74
+Nannochlorois       oculata,Nannochlorois,5,5000,0.01
+Nannochlorois       oculata,Nannochlorois,5,2500,-0.03
+Nannochlorois       oculata,Nannochlorois,10,5000,0.01
+Nannochlorois       oculata,Nannochlorois,10,2500,0.04
+Nannochlorois       oculata,Nannochlorois,25,5000,0.85
+Nannochlorois       oculata,Nannochlorois,25,2500,0.92
+Nannochlorois       oculata,Nannochlorois,30,5000,1.09
+Nannochlorois       oculata,Nannochlorois,30,2500,1.14
+Nannochloris salina,Nannochloris,5,5000,0.06
+Nannochloris salina,Nannochloris,5,2500,0.07
+Nannochloris salina,Nannochloris,10,5000,0.04
+Nannochloris salina,Nannochloris,10,2500,0.54
+Nannochloris salina,Nannochloris,25,5000,-0.32
+Nannochloris salina,Nannochloris,25,2500,-0.34
+Nannochloris salina,Nannochloris,30,5000,0.46
+Nannochloris salina,Nannochloris,30,2500,0.06
+Navicula incerta,Navicula,5,5000,0.16
+Navicula incerta,Navicula,5,2500,0.2
+Navicula incerta,Navicula,10,5000,0.37
+Navicula incerta,Navicula,10,2500,0.22
+Navicula incerta,Navicula,25,5000,0.39
+Navicula incerta,Navicula,25,2500,0.37
+Navicula incerta,Navicula,30,5000,0.48
+Navicula incerta,Navicula,30,2500,0.35
+Nitzscia sp.,Nitzscia,5,5000,-0.1
+Nitzscia sp.,Nitzscia,5,2500,0.12
+Nitzscia sp.,Nitzscia,10,5000,0.2
+Nitzscia sp.,Nitzscia,10,2500,0.23
+Nitzscia sp.,Nitzscia,25,5000,0.23
+Nitzscia sp.,Nitzscia,25,2500,0.29
+Nitzscia sp.,Nitzscia,30,5000,0.46
+Nitzscia sp.,Nitzscia,30,2500,0.4
+Skeletonema costatum,Skeletonema,5,5000,0.29
+Skeletonema costatum,Skeletonema,5,2500,0.34
+Skeletonema costatum,Skeletonema,10,5000,0.66
+Skeletonema costatum,Skeletonema,10,2500,0.61
+Skeletonema costatum,Skeletonema,25,5000,0.6
+Skeletonema costatum,Skeletonema,25,2500,0.67
+Skeletonema costatum,Skeletonema,30,5000,0.48
+Skeletonema costatum,Skeletonema,30,2500,0.43
+Tetraselmus suecica,Tetraselmus,5,5000,0.04
+Tetraselmus suecica,Tetraselmus,5,2500,-0.02
+Tetraselmus suecica,Tetraselmus,10,5000,0.42
+Tetraselmus suecica,Tetraselmus,10,2500,0.28
+Tetraselmus suecica,Tetraselmus,25,5000,0.46
+Tetraselmus suecica,Tetraselmus,25,2500,0.44
+Tetraselmus suecica,Tetraselmus,30,5000,0.55
+Tetraselmus suecica,Tetraselmus,30,2500,0.51
+Thalassiosira fluviatilis,Thalassiosira,5,5000,0.03
+Thalassiosira fluviatilis,Thalassiosira,5,2500,0.06
+Thalassiosira fluviatilis,Thalassiosira,10,5000,0.1
+Thalassiosira fluviatilis,Thalassiosira,10,2500,0.11
+Thalassiosira fluviatilis,Thalassiosira,25,5000,-0.03
+Thalassiosira fluviatilis,Thalassiosira,25,2500,0.1
+Thalassiosira fluviatilis,Thalassiosira,30,5000,0.28
+Thalassiosira fluviatilis,Thalassiosira,30,2500,0.23
+Thalassiosira sp.,Thalassiosira,5,5000,-0.29
+Thalassiosira sp.,Thalassiosira,5,2500,-0.17
+Thalassiosira sp.,Thalassiosira,10,5000,-0.04
+Thalassiosira sp.,Thalassiosira,10,2500,-0.12
+Thalassiosira sp.,Thalassiosira,25,5000,0.13
+Thalassiosira sp.,Thalassiosira,25,2500,0.15
+Thalassiosira sp.,Thalassiosira,30,5000,0.4
+Thalassiosira sp.,Thalassiosira,30,2500,0.41

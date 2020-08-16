@@ -4,10 +4,20 @@ title: About Me
 ---
 
 # Hi, I'm Félix !
-
 I'm a `r floor(as.numeric(Sys.Date() - as.Date('1992-09-17')) / 365.242)` years old French living in Paris.
 
+## Where I come from...
 I studied biotechnologies in for health and graduated in 2016 with a [Master Degree](http://www.polytech-angers.fr/fr/index/odf-istia/cycle-ingenieur/ingenieur-biologique-et-sante.html). During my cursus, I had the chance to take part in several project through internships, these experiences allowed me get a precise view of what I wanted to do: *in vitro diagnostic* product development.
+
+## The shift
+After a final and successfull internship in Paris working on nano latex immuno-assays, I was proposed a position as clinical study analyst. This wasn't a clinical study in pharma terms: the goal was to explore clinical potentials of a new type of optical assay the company developped recently. This was defetively a challenge and a chance to wander on unknown lands. So I took it.
+
+I was in charge of study design, data validation, data analysis. My role wasn't clear at the begining, so I sticked to what I knew and started bibliography to find relevant clinical applications. I identified one main clinical area where this new assay could be useful: Trauma management. With that, a wide set of variables that I identified as the most promising ones. An impression grew bigger and bigger as I was pursuing this designing phase: I didn't have the right toolbox to manage all that data efficiently.
+
+I broke my elbow and found myself home for one month: still with that impression in mind, I was determined to get back on those SQL basics I learned in Bioiformatics class. Instead, I stumbled on something that looked so much cooler: R (and the tiyverse).
+
+## The ambition
+
 
 *[to be continued...]*
 
@@ -16,13 +26,14 @@ I studied biotechnologies in for health and graduated in 2016 with a [Master Deg
 
 
 # Timeline
-Below are the main milestones I passed during my journey toward DataScience.
+Below are the main milestones I passed during my journey toward a DataScience carreer.
 
 ```{r,echo=F, warning=F, message=F,fig.asp=1.618,fig.align='center',fig.width=7}
 # Milestones lists
 
 data_raw <- c('
   - 2019-07-09: Attended useR2019 in Toulouse
+  - 2019-05-23: Shiny app for Rmd report generation calling python scripts through reticulate
   - 2019-04-27: First Github Pull Request on Tufesque2 R package
   - 2019-04-02: Rebuilt this website using blogdown
   - 2019-03-06: First requests on a Datalake (Hadoop) from RStudio
@@ -64,18 +75,17 @@ data_clean <-
 
 #Scales data
 
-month_buffer <- 2
-
 month_date_range <- seq(as.Date("2017-07-01"), max(data_clean$dates)+30, by='month')
 month <- lubridate::month(month_date_range,label=T,locale="en_US")
 dates_df <- data.frame(month_date_range, month)
-dates_df <- dates_df %>% mutate(year = case_when(month=="Jan" ~ lubridate::year(month_date_range),
+dates_df <- dates_df %>% 
+  mutate(year = case_when(month=="Jan" ~ lubridate::year(month_date_range),
                                           TRUE ~ as.numeric(NA)))
 
 # Plot 
 
 ggplot(dates_df, aes(x=0, y=month_date_range))+
-   ggrepel::geom_text_repel(data=data_clean, aes(x= 0, y=dates, label=milestones,size=4.5), 
+   ggrepel::geom_text_repel(data=data_clean, aes(x= 0, y=dates, label=milestones,size=4), 
                            hjust=1,
                            vjust=0.5,
                            force = 0.5,

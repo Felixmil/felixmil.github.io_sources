@@ -3,19 +3,20 @@ slug: now
 ---
 # Now
 
-> I am working as a Data Scientist in a team dedicated to **optimizing processes and supporting product development** using **data analysis** in a **haemostatis** (blood coagulation health) biotechnology company in France: [**Stago**](www.stago.com).  
+I am working as a Data Scientist in a team dedicated to **optimizing processes and supporting product development** using **data analysis** in a **haemostatis** (blood coagulation health) biotechnology company in France: [**Stago**](www.stago.com).  
 Our team is small but very diverse: electronicians, automation & engine engineers, fluid mechanics Dr. and a **biotechnologist** [(that's me `r emo::ji('hug')`)](/about/index.html): I'm exploring different fields and learning on a daily basis. 
->
-> Personnal reasons are pushing me to consider working at home, I engaged discussion with HR.
+
+Personnal reasons are pushing me to consider working from home, I engaged discussion with HR but will eventually leave if it is not possible at Stago.
 
 At the moment, my main challenges are:
 
-  - Perform large scale analysis on stago's automated analysers global performances and create **Rmarkdown** reports for **reproducible and comparative analysis** 
+  - Perform **large scale analysis** on stago's automated analysers global performances and create **Rmarkdown** reports for **reproducible and comparative analysis** 
   - Build a **predictive maintenance** model and performance monitoring tools for stago's automated analysers,
-  - Learn **python** for raw data processing tasks,
+  - Learn **python** for raw data processing tasks and OOP,
+  - Build **.exe files from python** to allow colleagues to parse **complicated log files** automatically,
   - Build an internal python module to ease up our different workflows based on our datalake,
   - Promote the use of **Shiny** to give the power of data analysis to non-programmers colleagues,
-  - Promote **Data Culture** in others services (please, no more color-filled and merged cells excel files
+  - Promote **Data Culture** in the company (please, no more color-filled and merged cells excel files)
     
 # Passed challenges:
   - `r emo::ji('white_check_mark')` Audit the development of a **Data Lake (Hadoop)** and make sure its structure fits my team's needs

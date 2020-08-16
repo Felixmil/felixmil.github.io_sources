@@ -1,8 +1,9 @@
 baseurl = "http://felixmil.github.io"
 title = "Felix MIL"
-publishDir = "../felixmil.github.io"
 
+publishDir = "../felixmil.github.io"
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+
 
 theme = "hugo-coder"
 
@@ -19,15 +20,14 @@ pygmentscodefencesguesssyntax = true
 disqusShortname = "yourdiscussshortname"
 
 
-
 [params]
     author = "Felix MIL"
     description = "Felix MIL's personal website"
     keywords = "blog,developer,personal"
     info = "Biotech and Data Scientist"
-    #avatarurl = "images/me.jpeg"
-    #favicon_32 = "images/fav_32x32.png"
-    footercontent = "Enter a text here."
+    avatarurl = "images/me.jpeg"
+    favicon_32 = "images/fav_32x32.png"
+    footercontent = ""
 
     dateformat = "January 2, 2006"
 

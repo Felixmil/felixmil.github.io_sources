@@ -1,0 +1,173 @@
+---
+title: TidyTuesday - CRAN code
+author: Felix MIL
+date: '2019-11-12'
+slug: tidytuesday-cran-code
+categories: []
+tags: []
+description: ''
+externalLink: ''
+series: []
+---
+
+
+
+<div id="intro" class="section level2">
+<h2>Intro</h2>
+<p>This post is a submission for Tidy Tuesday 2019 W46: <a href="https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-11-12">CRAN code</a></p>
+</div>
+<div id="getting-the-data" class="section level2">
+<h2>Getting the data</h2>
+<div id="data-dictionnary" class="section level3">
+<h3>Data dictionnary</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">variable</th>
+<th align="left">class</th>
+<th align="left">description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">file</td>
+<td align="left">double</td>
+<td align="left">Number of files</td>
+</tr>
+<tr class="even">
+<td align="left">language</td>
+<td align="left">character</td>
+<td align="left">Programming Language</td>
+</tr>
+<tr class="odd">
+<td align="left">blank</td>
+<td align="left">double</td>
+<td align="left">Blank Lines</td>
+</tr>
+<tr class="even">
+<td align="left">comment</td>
+<td align="left">double</td>
+<td align="left">Commented Lines</td>
+</tr>
+<tr class="odd">
+<td align="left">code</td>
+<td align="left">double</td>
+<td align="left">Lines of Code</td>
+</tr>
+<tr class="even">
+<td align="left">pkg_name</td>
+<td align="left">character</td>
+<td align="left">Package Name</td>
+</tr>
+<tr class="odd">
+<td align="left">version</td>
+<td align="left">character</td>
+<td align="left">Package Version</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="a-glimpse-on-data" class="section level3">
+<h3>A glimpse on data</h3>
+<pre class="r"><code>cran_code &lt;- readr::read_csv(&quot;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-11-12/loc_cran_packages.csv&quot;)</code></pre>
+<pre class="r"><code>head(cran_code)</code></pre>
+<pre><code>## # A tibble: 6 x 7
+##    file language blank comment  code pkg_name version
+##   &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;  
+## 1     2 R           96     353   365 A3       1.0.0  
+## 2     1 HTML       347       5  2661 aaSEA    1.0.0  
+## 3    23 R           63     325   676 aaSEA    1.0.0  
+## 4     3 HTML       307       9  1275 abbyyR   0.5.5  
+## 5    30 R          224     636   587 abbyyR   0.5.5  
+## 6     5 Markdown   246       0   418 abbyyR   0.5.5</code></pre>
+<pre class="r"><code>tibble::glimpse(cran_code)</code></pre>
+<pre><code>## Rows: 34,477
+## Columns: 7
+## $ file     &lt;dbl&gt; 2, 1, 23, 3, 30, 5, 1, 11, 10, 16, 6, 2, 1, 6, 15, 7, 16, 2,…
+## $ language &lt;chr&gt; &quot;R&quot;, &quot;HTML&quot;, &quot;R&quot;, &quot;HTML&quot;, &quot;R&quot;, &quot;Markdown&quot;, &quot;HTML&quot;, &quot;R&quot;, &quot;R&quot;,…
+## $ blank    &lt;dbl&gt; 96, 347, 63, 307, 224, 246, 26, 32, 104, 153, 101, 60, 11, 1…
+## $ comment  &lt;dbl&gt; 353, 5, 325, 9, 636, 0, 1, 202, 333, 62, 330, 46, 0, 0, 98, …
+## $ code     &lt;dbl&gt; 365, 2661, 676, 1275, 587, 418, 190, 141, 406, 882, 294, 233…
+## $ pkg_name &lt;chr&gt; &quot;A3&quot;, &quot;aaSEA&quot;, &quot;aaSEA&quot;, &quot;abbyyR&quot;, &quot;abbyyR&quot;, &quot;abbyyR&quot;, &quot;ABC.R…
+## $ version  &lt;chr&gt; &quot;1.0.0&quot;, &quot;1.0.0&quot;, &quot;1.0.0&quot;, &quot;0.5.5&quot;, &quot;0.5.5&quot;, &quot;0.5.5&quot;, &quot;0.9.0…</code></pre>
+</div>
+</div>
+<div id="question" class="section level2">
+<h2>Question</h2>
+<p><strong>Which are the most and less documented package available on CRAN ?</strong></p>
+</div>
+<div id="preparation" class="section level2">
+<h2>Preparation</h2>
+<div id="loading-libraries" class="section level3">
+<h3>Loading libraries</h3>
+<pre class="r"><code>library(tidyverse)
+library(lubridate)
+library(forcats)
+library(cranlogs)</code></pre>
+</div>
+<div id="measures" class="section level3">
+<h3>Measures</h3>
+<pre class="r"><code>cran_code_out &lt;- 
+  cran_code %&gt;%
+  mutate(pkg_name = as.factor(pkg_name)) %&gt;%
+  group_by(pkg_name) %&gt;%
+  mutate(comm_code_ratio =  sum(code, na.rm = T)/sum(comment,na.rm = T)) %&gt;%
+  filter(comm_code_ratio != Inf) %&gt;%
+  select(pkg_name, comm_code_ratio) %&gt;%
+  ungroup() %&gt;%
+  unique()
+
+cran_code_out &lt;- 
+  cran_code_out %&gt;%
+  mutate(c = cut(comm_code_ratio, breaks = c(seq(0,20,0.5))))
+  
+  
+
+mean(cran_code_out$comm_code_ratio)</code></pre>
+<pre><code>## [1] 11.29716</code></pre>
+<pre class="r"><code># sd(cran_code_out$comm_code_ratio)
+
+
+# cran_code_out &lt;- 
+#   cran_code_out %&gt;%
+#   mutate(q= cut(comm_code_ratio, breaks=c(quantile(cran_code_out$comm_code_ratio, probs = seq(0, 1, by = 0.20)))))</code></pre>
+</div>
+</div>
+<div id="visualisation" class="section level2">
+<h2>Visualisation</h2>
+<div id="section" class="section level3">
+<h3></h3>
+<pre class="r"><code>cran_code_out %&gt;% 
+  ggplot(aes(c)) +
+  geom_bar()+
+  theme(axis.text.x = element_text(angle=30))+
+  scale_x_discrete(labels = c(seq(0,19.5,0.5), &#39;20+&#39;))+
+  labs(x=&#39;Comment per code line&#39;, y=&#39;count&#39;)</code></pre>
+<p><img src="/drafts/2019-11-12-tidytuesday-cran-code_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cran_code_out %&gt;%
+  top_n(n = 25,wt = comm_code_ratio) %&gt;%
+  ggplot(aes(fct_reorder(pkg_name,comm_code_ratio),comm_code_ratio))+
+  geom_col() +
+  coord_flip()+
+  labs(y=&#39;Comment line per code line&#39;, x=&#39;package&#39;,title = &#39;Top 25 packages with most commented R code&#39;)</code></pre>
+<p><img src="/drafts/2019-11-12-tidytuesday-cran-code_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cran_code_out %&gt;%
+  top_n(n = 25,wt = 1/comm_code_ratio) %&gt;%
+  ggplot(aes(fct_reorder(pkg_name,-comm_code_ratio),comm_code_ratio))+
+  geom_col() +
+  coord_flip()+
+    labs(y=&#39;Comment line per code line&#39;, x=&#39;package&#39;, &#39;Bot 25 packages with less commented R code&#39;)</code></pre>
+<p><img src="/drafts/2019-11-12-tidytuesday-cran-code_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>top_down &lt;- 
+  cran_top_downloads(when = c( &quot;last-month&quot;), count = 100)
+
+cran_code_out %&gt;% 
+  filter(pkg_name %in% top_down$package) %&gt;%
+  ggplot(aes(c)) +
+  geom_bar()+
+  theme(axis.text.x = element_text(angle=30))+
+    scale_x_discrete(labels = c(seq(0,19.5,0.5), &#39;20+&#39;))+
+  labs(x=&#39;Comment lines per code line&#39;, y=&#39;count&#39;, title=&#39;Number of comment lines per R code line for the 100 most downloaded packages&#39;)</code></pre>
+<p><img src="/drafts/2019-11-12-tidytuesday-cran-code_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>

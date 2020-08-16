@@ -1,0 +1,232 @@
+---
+title: "Which one has the biggest effect on sea algae growth: Light or Temperature (r/dataisbeautiful submission)"
+author: Felix MIL
+date: '2018-01-26'
+categories:
+  - Datavisualisation
+  - Knowledge Discovery
+tags:
+  - R
+  - reddit
+  - Tableau
+slug: first-article-and-entry-for-r-dataisbeautiful-dataviz
+banner: "img/Articles/Reddit-alien.png"
+output: html_document
+---
+
+<script src="/rmarkdown-libs/htmlwidgets/htmlwidgets.js"></script>
+<script src="/rmarkdown-libs/jquery/jquery.min.js"></script>
+<link href="/rmarkdown-libs/datatables-css/datatables-crosstalk.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/datatables-binding/datatables.js"></script>
+<link href="/rmarkdown-libs/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="/rmarkdown-libs/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/dt-core/js/jquery.dataTables.min.js"></script>
+<link href="/rmarkdown-libs/crosstalk/css/crosstalk.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/crosstalk/js/crosstalk.min.js"></script>
+<script src="/rmarkdown-libs/pymjs/pym.v1.js"></script>
+<script src="/rmarkdown-libs/widgetframe-binding/widgetframe.js"></script>
+
+
+<p>As first article on this R, datascience and dataviz dedicated blog, I present to you my entry for the <a href="https://www.reddit.com/r/dataisbeautiful/comments/7nm6ed/battle_dataviz_battle_for_the_month_of_january/">DataViz battle of January 2018</a>. The rules can be found in the link.</p>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p>This month, the data source is a <a href="http://aquatext.com/tables/algaegrwth.htm">.htm webpage</a> containing several algae growthrates for several light and temperature conditions.</p>
+</div>
+<div id="how-i-worked-on-this" class="section level2">
+<h2>How I worked on this</h2>
+<p>For this project I used :</p>
+<ol style="list-style-type: decimal">
+<li>R for</li>
+</ol>
+<ul>
+<li>Data importation</li>
+<li>Data wrangling and cleaning</li>
+<li>Model analysis</li>
+</ul>
+<ol start="2" style="list-style-type: decimal">
+<li>Tableau</li>
+</ol>
+<ul>
+<li>Data exploration</li>
+<li>Generate the data dashboard</li>
+</ul>
+<p>So let’s start with R !</p>
+</div>
+<div id="steps" class="section level2">
+<h2>Steps</h2>
+<div id="load-librairies" class="section level3">
+<h3>Load Librairies</h3>
+<pre class="r"><code>library(devtools)
+library(tidyverse) #essential
+library(stringr) #essential
+library(htmltab) #extract from .htm page
+library(DT) #datatables navigation
+library(patchwork)
+library(ggpubr)
+library(ggsignif)
+library(ggiraph)
+library(viridis)
+library(packcircles)
+library(widgetframe)</code></pre>
+</div>
+<div id="download-database-and-import-into-r" class="section level3">
+<h3>Download database and import into R</h3>
+<pre class="r"><code>print(getwd())</code></pre>
+<pre><code>## [1] &quot;/Users/felix/Programmation/R/Blog/Blog Sources/content/posts&quot;</code></pre>
+<pre class="r"><code>algae &lt;- rio::import(&quot;../../resources/data/algae.csv&quot;)</code></pre>
+<pre class="r"><code>DT::datatable(algae)</code></pre>
+<div id="htmlwidget-1" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100","101","102","103","104","105","106","107","108","109","110","111","112","113","114","115","116","117","118","119","120","121","122","123","124","125","126","127","128","129","130","131","132","133","134","135","136","137","138","139","140","141","142","143","144","145","146","147","148","149","150","151","152"],["Caloneis schroderi","Caloneis schroderi","Caloneis schroderi","Caloneis schroderi","Caloneis schroderi","Caloneis schroderi","Caloneis schroderi","Caloneis schroderi","Chaetoceros gracilis","Chaetoceros gracilis","Chaetoceros gracilis","Chaetoceros gracilis","Chaetoceros gracilis","Chaetoceros gracilis","Chaetoceros gracilis","Chaetoceros gracilis","Chaetoceros simplex","Chaetoceros simplex","Chaetoceros simplex","Chaetoceros simplex","Chaetoceros simplex","Chaetoceros simplex","Chaetoceros simplex","Chaetoceros simplex","Chlorella ellipsoidea","Chlorella ellipsoidea","Chlorella ellipsoidea","Chlorella ellipsoidea","Chlorella ellipsoidea","Chlorella ellipsoidea","Chlorella ellipsoidea","Chlorella ellipsoidea","Chlorella stigmatophora","Chlorella stigmatophora","Chlorella stigmatophora","Chlorella stigmatophora","Chlorella stigmatophora","Chlorella stigmatophora","Chlorella stigmatophora","Chlorella stigmatophora","Chlorella vulgaris       (freshwater)","Chlorella vulgaris       (freshwater)","Chlorella vulgaris       (freshwater)","Chlorella vulgaris       (freshwater)","Chlorella vulgaris       (freshwater)","Chlorella vulgaris       (freshwater)","Chlorella vulgaris       (freshwater)","Chlorella vulgaris       (freshwater)","Dunaniella tertiolecta","Dunaniella tertiolecta","Dunaniella tertiolecta","Dunaniella tertiolecta","Dunaniella tertiolecta","Dunaniella tertiolecta","Dunaniella tertiolecta","Dunaniella tertiolecta","Cyclotella sp. NUFP-9","Cyclotella sp. NUFP-9","Cyclotella sp. NUFP-9","Cyclotella sp. NUFP-9","Cyclotella sp. NUFP-9","Cyclotella sp. NUFP-9","Cyclotella sp. NUFP-9","Cyclotella sp. NUFP-9","Hanzchia marina","Hanzchia marina","Hanzchia marina","Hanzchia marina","Hanzchia marina","Hanzchia marina","Hanzchia marina","Hanzchia marina","Isochrysis galbana","Isochrysis galbana","Isochrysis galbana","Isochrysis galbana","Isochrysis galbana","Isochrysis galbana","Isochrysis galbana","Isochrysis galbana","Isochrysis aff. galbana","Isochrysis aff. galbana","Isochrysis aff. galbana","Isochrysis aff. galbana","Isochrysis aff. galbana","Isochrysis aff. galbana","Isochrysis aff. galbana","Isochrysis aff. galbana","Nannochlorois       oculata","Nannochlorois       oculata","Nannochlorois       oculata","Nannochlorois       oculata","Nannochlorois       oculata","Nannochlorois       oculata","Nannochlorois       oculata","Nannochlorois       oculata","Nannochloris salina","Nannochloris salina","Nannochloris salina","Nannochloris salina","Nannochloris salina","Nannochloris salina","Nannochloris salina","Nannochloris salina","Navicula incerta","Navicula incerta","Navicula incerta","Navicula incerta","Navicula incerta","Navicula incerta","Navicula incerta","Navicula incerta","Nitzscia sp.","Nitzscia sp.","Nitzscia sp.","Nitzscia sp.","Nitzscia sp.","Nitzscia sp.","Nitzscia sp.","Nitzscia sp.","Skeletonema costatum","Skeletonema costatum","Skeletonema costatum","Skeletonema costatum","Skeletonema costatum","Skeletonema costatum","Skeletonema costatum","Skeletonema costatum","Tetraselmus suecica","Tetraselmus suecica","Tetraselmus suecica","Tetraselmus suecica","Tetraselmus suecica","Tetraselmus suecica","Tetraselmus suecica","Tetraselmus suecica","Thalassiosira fluviatilis","Thalassiosira fluviatilis","Thalassiosira fluviatilis","Thalassiosira fluviatilis","Thalassiosira fluviatilis","Thalassiosira fluviatilis","Thalassiosira fluviatilis","Thalassiosira fluviatilis","Thalassiosira sp.","Thalassiosira sp.","Thalassiosira sp.","Thalassiosira sp.","Thalassiosira sp.","Thalassiosira sp.","Thalassiosira sp.","Thalassiosira sp."],["Caloneis","Caloneis","Caloneis","Caloneis","Caloneis","Caloneis","Caloneis","Caloneis","Chaetoceros","Chaetoceros","Chaetoceros","Chaetoceros","Chaetoceros","Chaetoceros","Chaetoceros","Chaetoceros","Chaetoceros","Chaetoceros","Chaetoceros","Chaetoceros","Chaetoceros","Chaetoceros","Chaetoceros","Chaetoceros","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Chlorella","Dunaniella","Dunaniella","Dunaniella","Dunaniella","Dunaniella","Dunaniella","Dunaniella","Dunaniella","Cyclotella","Cyclotella","Cyclotella","Cyclotella","Cyclotella","Cyclotella","Cyclotella","Cyclotella","Hanzchia","Hanzchia","Hanzchia","Hanzchia","Hanzchia","Hanzchia","Hanzchia","Hanzchia","Isochrysis","Isochrysis","Isochrysis","Isochrysis","Isochrysis","Isochrysis","Isochrysis","Isochrysis","Isochrysis","Isochrysis","Isochrysis","Isochrysis","Isochrysis","Isochrysis","Isochrysis","Isochrysis","Nannochlorois","Nannochlorois","Nannochlorois","Nannochlorois","Nannochlorois","Nannochlorois","Nannochlorois","Nannochlorois","Nannochloris","Nannochloris","Nannochloris","Nannochloris","Nannochloris","Nannochloris","Nannochloris","Nannochloris","Navicula","Navicula","Navicula","Navicula","Navicula","Navicula","Navicula","Navicula","Nitzscia","Nitzscia","Nitzscia","Nitzscia","Nitzscia","Nitzscia","Nitzscia","Nitzscia","Skeletonema","Skeletonema","Skeletonema","Skeletonema","Skeletonema","Skeletonema","Skeletonema","Skeletonema","Tetraselmus","Tetraselmus","Tetraselmus","Tetraselmus","Tetraselmus","Tetraselmus","Tetraselmus","Tetraselmus","Thalassiosira","Thalassiosira","Thalassiosira","Thalassiosira","Thalassiosira","Thalassiosira","Thalassiosira","Thalassiosira","Thalassiosira","Thalassiosira","Thalassiosira","Thalassiosira","Thalassiosira","Thalassiosira","Thalassiosira","Thalassiosira"],[5,5,10,10,25,25,30,30,5,5,10,10,25,25,30,30,5,5,10,10,25,25,30,30,5,5,10,10,25,25,30,30,5,5,10,10,25,25,30,30,5,5,10,10,25,25,30,30,5,5,10,10,25,25,30,30,5,5,10,10,25,25,30,30,5,5,10,10,25,25,30,30,5,5,10,10,25,25,30,30,5,5,10,10,25,25,30,30,5,5,10,10,25,25,30,30,5,5,10,10,25,25,30,30,5,5,10,10,25,25,30,30,5,5,10,10,25,25,30,30,5,5,10,10,25,25,30,30,5,5,10,10,25,25,30,30,5,5,10,10,25,25,30,30,5,5,10,10,25,25,30,30],[5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500,5000,2500],[-0.01,-0.5,-0.1,0.25,0.28,0.3,0.38,0.29,-0.01,-0.05,0.16,0.07,0.52,0.39,0.62,0.73,-0.06,-0.01,0.27,0.55,0.47,0.52,0.54,0.63,0.03,0.02,0.58,0.53,0.88,0.85,0.98,0.94,0.01,0.24,0.36,0.24,0.78,0.56,0.66,0.39,-0.25,0,0.21,0.17,0.68,0.67,-0.29,-0.2,0.28,0.17,0.43,0.42,0.6,0.64,0.6,0.45,0.16,0.08,0,-0.1,0,0,-0.18,-0.19,-0.36,-0.07,-0.68,-0.21,0.21,0.15,0.11,0.06,-0.57,-0.07,0.42,0.25,0.55,0.55,0.52,0.51,-0.62,-0.67,null,-0.14,0.78,0.81,0.76,0.74,0.01,-0.03,0.01,0.04,0.85,0.92,1.09,1.14,0.06,0.07,0.04,0.54,-0.32,-0.34,0.46,0.06,0.16,0.2,0.37,0.22,0.39,0.37,0.48,0.35,-0.1,0.12,0.2,0.23,0.23,0.29,0.46,0.4,0.29,0.34,0.66,0.61,0.6,0.67,0.48,0.43,0.04,-0.02,0.42,0.28,0.46,0.44,0.55,0.51,0.03,0.06,0.1,0.11,-0.03,0.1,0.28,0.23,-0.29,-0.17,-0.04,-0.12,0.13,0.15,0.4,0.41]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Specy<\/th>\n      <th>Genus<\/th>\n      <th>Temperature<\/th>\n      <th>Light<\/th>\n      <th>GrowthRate<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<p>wow <code>htmltab</code> is very efficient !</p>
+</div>
+<div id="wrangling-with-data" class="section level3">
+<h3>Wrangling with data</h3>
+<p>Now we need to wrangle <code>algae</code> in order to make it tidy (1 row = 1 observation) so analysis can be performed more easily afterward :</p>
+<pre class="r"><code>algae &lt;- algae[-3,] #remove duplicatedLight row
+
+algae &lt;- t(algae)
+
+colnames(algae) &lt;- algae[1, ] #get column names
+algae &lt;- algae[-1,] #remove first row originally containing column names
+
+algae &lt;- algae %&gt;% as.data.frame() %&gt;% gather(key=&quot;specy&quot;, value=&quot;Growthrate&quot;, `Caloneis schroderi`:`Thalassiosira sp.`) 
+#this part was troublesome, I didn&#39;t figure that transpose would considerably easy the tidying process here.
+
+colnames(algae) &lt;- c(&quot;Temperature&quot;,&quot;Light&quot;,&quot;Specy&quot;,&quot;GrowthRate&quot;)
+
+algae$GrowthRate &lt;- as.numeric(algae$GrowthRate)
+
+filter(algae, is.na(GrowthRate))</code></pre>
+<p>Unexpected value for Isochrysis <strong>aff. galbana</strong> at <em>Temperature 10 and Light 5000</em> : <strong>0..06</strong>. This value has been put appart for the rest of the analysis and is considered as <strong>NA</strong>.</p>
+<p>In addition the first word <code>Specy</code> is extracted to get the Genus.</p>
+<pre class="r"><code>#lets add a level of detail here
+algae &lt;- algae %&gt;% mutate(Genus=word(algae$Specy,1)) %&gt;% select(Specy,Genus,Temperature,Light,GrowthRate)
+
+
+frameWidget(datatable(algae), width = &quot;95%&quot;)</code></pre>
+<div id="htmlwidget-2" style="width:95%;height:480px;" class="widgetframe html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2">{"x":{"url":"/posts/2018-01-20-first-article-and-entry-for-r-dataisbeautiful-dataviz_files/figure-html//widgets/widget_checking dataset.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
+<p>This it, data is tidy and ready to be saved and used in tableau !</p>
+</div>
+</div>
+<div id="exploratory-data-analysis-with-tableau-dashboard" class="section level2">
+<h2>Exploratory data analysis (with Tableau Dashboard)</h2>
+<p>I recommend you open it as full screen.
+<div class='tableauPlaceholder' id='viz1517440297592' style='position: relative'><noscript><a href='#'><img alt='Algae Growth (r&#47;dataisbeautiful Dataviz Battle - January 2018) ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Al&#47;AlgaeV1_0&#47;GrowthRateDashboard&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='AlgaeV1_0&#47;GrowthRateDashboard' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Al&#47;AlgaeV1_0&#47;GrowthRateDashboard&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1517440297592');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='829px';vizElement.style.height='624px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script></p>
+<p>this dashboard was designed more for data exploration than knowledge presentation. To me, playing around with data is the best way to grasp it and to make first assumptions, this makes Tableau a powerful and fun tool for my first approach. Through that process, I could generate Hypothesis and even bring some real facts about this dataset.</p>
+<p>As only 9 algaes can grow at 5C and 15C at 10C on a total of 19 species, temperature seems to be the most important factor for algae growth.
+2. More light is not directly linked to more growth, instead, it looks like a genus or specy preference.")</p>
+<div id="facts" class="section level3">
+<h3>Facts</h3>
+<p>Saying that I cannot control Light and Temperature and these variables vary from their minimum and maximum during the year, the best growing algae is <strong>Chlorella ellipsoidea</strong> as its mean growthrate is the highest.</p>
+</div>
+</div>
+<div id="hypothesis-testing" class="section level2">
+<h2>Hypothesis testing</h2>
+<div id="visualisation" class="section level3">
+<h3>Visualisation</h3>
+<p>Does temperature has a true effect on the algae of this dataset ? is Light really meaningless ? Let’s get back in R !</p>
+<p>The strategy here is to model Temperature et Light effects over algae growth and perform statistical methods to draw approximate conclusions .</p>
+<pre class="r"><code>#First, we plot the data points
+box1 &lt;- ggplot(algae, aes(fct_inorder(as.factor(Temperature)), GrowthRate))+
+  geom_boxplot(aes(group=Temperature), outlier.alpha = 0.4)+
+  labs(x=&quot;Temperature (Celsius)&quot;)
+
+box2 &lt;- ggplot(algae, aes(Light, GrowthRate))+
+  geom_boxplot(aes(group=Light), outlier.alpha = 0.4)+
+  theme(axis.title.y = element_blank())+
+  labs(x=&quot;Light (Lux)&quot;)
+
+box1 + box2 #I love patchwork</code></pre>
+<p><img src="/posts/2018-01-20-first-article-and-entry-for-r-dataisbeautiful-dataviz_files/figure-html/unnamed-chunk-4-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>We see a global tendency of Growthrate increasing as Temperature increases. As for Light, nothing clear emerge from this representation.</p>
+<p>Those two charts could be replaced by this other interesing visualisation.
+Here, a <code>geom_signif</code> was added in order to compare Species through Light conditions as paired samples (linked by gray lines).Temperature effect is clear, higher temperatures generally mean faster growth. For Light, the result of the wilcoxon t.test for paired sample are not significant at any temperature, thus we cannot say that the algae population is different between the two light levels. However, a nice feature of this graph. allows us to see precisely how algae species behave from 2500 to 5000 lux : some grow faster at 2500 and others at 5000. (do these preferences change with temperature ?)</p>
+<pre class="r"><code>ggpaired(algae, x=&quot;Light&quot;, y=&quot;GrowthRate&quot;,id = &quot;Specy&quot;,color = &quot;GrowthRate&quot;,line.color = &quot;grey70&quot;,point.size = 1.5)+
+  facet_grid(~fct_inorder(as.factor(Temperature)))+
+  geom_signif(comparisons =list(c(&quot;2500&quot;,&quot;5000&quot;)),map_signif_level = T,textsize = 3)+
+  scale_color_viridis(begin = 0,end = 0.7, direction=-1)+
+  labs(x=&quot;Light&quot;, y=&quot;Growthrate&quot;, title=&quot;Growthrates per Temperature and Light&quot;, caption=&quot;NS is for Not significant. Wilcoxon t test&quot;)+
+  theme(legend.position = &quot;top&quot;, plot.caption = element_text(hjust=0, face = &quot;italic&quot;,size = 9), plot.title = element_text(hjust = 0.5))</code></pre>
+<p><img src="/posts/2018-01-20-first-article-and-entry-for-r-dataisbeautiful-dataviz_files/figure-html/unnamed-chunk-5-1.png" width="90%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="modelisation" class="section level3">
+<h3>Modelisation</h3>
+<p>In order to assess and quantify the effect of Temperature and light on algae growth, we fit an anova model :</p>
+<pre class="r"><code>fitanova &lt;- aov(algae$GrowthRate~algae$Temperature*algae$Light+algae$Light*algae$Temperature)
+summary(fitanova) #this is also possible with lm() but doesn&#39;t accept factors</code></pre>
+<pre><code>##                                Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+## algae$Temperature               1  5.301   5.301  58.742 2.25e-12 ***
+## algae$Light                     1  0.001   0.001   0.006    0.940    
+## algae$Temperature:algae$Light   1  0.047   0.047   0.516    0.474    
+## Residuals                     147 13.265   0.090                     
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 1 observation deleted due to missingness</code></pre>
+<p>The results of this modelisation tell us that only temperature has significant effet on growth (or that we don’t have enough evidence to show Light effects if you prefer).</p>
+<p>If we consider Temperature as continuous and fit into a linear model, we can provide a rough quantification of its effect on growth :</p>
+<pre class="r"><code>fitlm &lt;- lm(algae$GrowthRate~algae$Temperature)
+
+ggplot(algae, 
+       aes(as.numeric(Temperature), GrowthRate))+
+  geom_point(aes(color=Genus))+
+  geom_smooth(method=&quot;lm&quot;)+
+  stat_summary(fun.y = mean, geom=&quot;line&quot;, aes(group=Genus, color=Genus))+
+  labs(title =paste(&quot;Growthrate =&quot;,
+                    signif(fitlm$coef[[2]], 3),
+                    &quot;* Temperature +&quot;,
+                    signif(fitlm$coef[[1]],3)), 
+       subtitle=paste(&quot;Adj R2 = &quot;,
+                      signif(summary(fitlm)$adj.r.squared, 5), 
+                      &quot; p-value =&quot;,
+                      signif(summary(fitlm)$coef[2,4], 5)))+
+  theme(plot.title = element_text(hjust=0.5), 
+        plot.subtitle = element_text(hjust=0.5))+
+  labs(x=&quot;Temperature (Celsius)&quot;)</code></pre>
+<p><img src="/posts/2018-01-20-first-article-and-entry-for-r-dataisbeautiful-dataviz_files/figure-html/unnamed-chunk-7-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p>I am not rigorously sure about this assumption of effect quantification, so if i’m wrong please, contact me on twitter</p>
+<p>So what doest Algae data set teach us ?
+If you want to grow algae at industrial scale, you need to control water temperature and keep it at high level (at least around 30Celsius) while lack of sun is not a big problem.
+So … that explains why the most part of algae industry in France was able to set up in Bretagne !</p>
+<p>Thank you for reading and come back next month for the next dataviz battle !</p>
+<hr />
+</div>
+</div>
+<div id="bonus" class="section level2">
+<h2>Bonus</h2>
+<p>At the begining of this project, I tried to use only R to build the DataViz I wanted to make, but this quickly turned in a very complicated task…</p>
+<pre class="r"><code>algae_means &lt;- algae %&gt;% group_by(Specy,Light) %&gt;% mutate(growth_minus_Temp =mean(GrowthRate, na.rm=T)) %&gt;% ungroup() %&gt;%  group_by(Specy,Temperature) %&gt;% mutate(growth_minus_Light =mean(GrowthRate, na.rm=T)) %&gt;% ungroup() %&gt;% group_by(Specy) %&gt;% mutate(total_mean=mean(GrowthRate, na.rm=T))
+
+library(&quot;packcircles&quot;)
+library(&quot;viridis&quot;)
+library(&quot;ggiraph&quot;)
+pack &lt;- circleProgressiveLayout(unique(algae_means$total_mean),sizetype = &quot;area&quot;)
+pack &lt;- pack[complete.cases(pack),]
+
+data &lt;-  bind_cols(algae_means %&gt;% select(Specy, Genus, total_mean) %&gt;% filter(total_mean&gt;=0)%&gt;% unique(), pack)
+
+pack &lt;- cbind(Specy=data$Specy, pack)
+pack &lt;- pack %&gt;% select(x,y,radius,Specy)
+pack$radius &lt;-  rnorm(2,mean = 0.95,sd = 0.05)*pack$radius
+
+data$text &lt;- paste(&quot;Genus : &quot;, data$Genus,&quot;\n&quot;,&quot;Specy: &quot;,data$Specy, &quot;\n&quot;, &quot;Mean Growthrate : &quot;,data$total_mean)
+
+dat.gg &lt;- circleLayoutVertices(pack,npoints=60,idcol = &quot;Specy&quot;)
+dat.gg &lt;- dat.gg %&gt;% mutate(Genus=word(dat.gg$id,1))
+
+p &lt;- ggplot() + 
+  geom_polygon_interactive(data = dat.gg, aes(x, y, group=id, fill=id, data_id=id, tooltip=data$text[id]), colour = &quot;black&quot;, alpha = 0.75) +
+  geom_text(data = data, aes(x, y, label =Specy, size=(0.25*radius)), color=&quot;black&quot;) +
+  theme_void() + 
+  theme(legend.position=&quot;none&quot;, plot.margin=unit(c(0,0,0,0),&quot;cm&quot;) ) + 
+  coord_equal()+
+  labs(title = &quot;Mean Growth Rate of algae by species&quot;, caption=&quot;Colored by Genus. Mean Growth is idependant of : \n   - Light (between 2,5-5K Lux) \n  - Temperature (between 5-25 Celsius)&quot;)+
+  theme(plot.title = element_text(size=13, hjust=0.5,face = &quot;bold&quot;), plot.caption = element_text(size=8, hjust=0,face = &quot;italic&quot;))
+ 
+i_plot &lt;- ggiraph(ggobj = p, height_svg = 6.5)
+
+widgetframe::frameWidget(i_plot, width=&quot;65%&quot;, height =  )</code></pre>
+<div id="htmlwidget-3" style="width:65%;height:480px;" class="widgetframe html-widget"></div>
+<script type="application/json" data-for="htmlwidget-3">{"x":{"url":"/posts/2018-01-20-first-article-and-entry-for-r-dataisbeautiful-dataviz_files/figure-html//widgets/widget_unnamed-chunk-8.html","options":{"xdomain":"*","allowfullscreen":false,"lazyload":false}},"evals":[],"jsHooks":[]}</script>
+<p>Although this chart is OK, it is far from finished, and I still spent about 2 hours to get it ! This is why I think combining R and Tableau is good for knowledge discovery process for a R padawan like me.</p>
+</div>

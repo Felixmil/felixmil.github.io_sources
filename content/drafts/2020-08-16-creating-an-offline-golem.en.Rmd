@@ -1,0 +1,30 @@
+---
+title: Creating an Offline Golem
+author: Félix
+date: '2020-08-16'
+slug: creating-an-offline-golem
+categories: []
+tags: []
+description: ''
+externalLink: ''
+series: []
+---
+
+# Creating an Offline Golem
+
+## Finding other ways
+
+I discovered the art of programming and the R language in 2016. It took a while before I could get R & Rstudio on my computer at work. Today, programming is my main occupation at work and I use R almost everyday. People I worked with and showed outputs from R scripts (Rmarkdown report, Shiny apps, Models) showed great interest and recognized it as a powerful and versatile tool. However, R did not crossed the production line yet: it is considered as research and development tool. It is used for quickly building prototypes and establish proofs of concepts.
+
+Consequently, my team has little to no resources to get proper infrastructures like a dedicated server or even IT support. Still, we have a lot of collaborators without any R environment or even programming skills interested in what R made possible. For example: integrating a shiny application in a hotline service to help data-based decisions.
+
+So, how to provide production-grade data product like a shiny app without a proper infrastructure ?
+
+We had to find a way...
+
+## How to replace a shiny server ?
+
+Without IT support and a majority non programmers users: impossible to install R on each computer and guide them through installing packages and runing the shiny app.
+Thus the app needed to be portable, on a USB key for instance.
+
+

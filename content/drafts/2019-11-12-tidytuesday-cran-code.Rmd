@@ -1,0 +1,147 @@
+---
+title: TidyTuesday - CRAN code
+author: Felix MIL
+date: '2019-11-12'
+slug: tidytuesday-cran-code
+categories: []
+tags: []
+description: ''
+externalLink: ''
+series: []
+---
+
+
+
+```{r setup, include=F}
+knitr::opts_chunk$set(echo = TRUE, 
+                      warning=F, 
+                      fig.align = "center", 
+                      message=F)
+```
+
+## Intro
+
+This post is a submission for Tidy Tuesday 2019 W46: [CRAN code](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-11-12)
+
+
+## Getting the data
+
+### Data dictionnary
+
+|variable |class     |description |
+|:--------|:---------|:-----------|
+|file     |double    | Number of files |
+|language |character | Programming Language |
+|blank    |double    | Blank Lines |
+|comment  |double    | Commented Lines |
+|code     |double    | Lines of Code |
+|pkg_name |character | Package Name |
+|version  |character | Package Version |
+
+### A glimpse on data
+```{r}
+cran_code <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-11-12/loc_cran_packages.csv")
+```
+
+```{r}
+head(cran_code)
+```
+
+```{r}
+tibble::glimpse(cran_code)
+```
+
+## Question
+
+**Which are the most and less documented package available on CRAN ?**
+
+## Preparation
+
+### Loading libraries
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(forcats)
+library(cranlogs)
+```
+
+### Measures
+
+```{r}
+cran_code_out <- 
+  cran_code %>%
+  mutate(pkg_name = as.factor(pkg_name)) %>%
+  group_by(pkg_name) %>%
+  mutate(comm_code_ratio =  sum(code, na.rm = T)/sum(comment,na.rm = T)) %>%
+  filter(comm_code_ratio != Inf) %>%
+  select(pkg_name, comm_code_ratio) %>%
+  ungroup() %>%
+  unique()
+
+cran_code_out <- 
+  cran_code_out %>%
+  mutate(c = cut(comm_code_ratio, breaks = c(seq(0,20,0.5))))
+  
+  
+
+mean(cran_code_out$comm_code_ratio)
+
+
+# sd(cran_code_out$comm_code_ratio)
+
+
+# cran_code_out <- 
+#   cran_code_out %>%
+#   mutate(q= cut(comm_code_ratio, breaks=c(quantile(cran_code_out$comm_code_ratio, probs = seq(0, 1, by = 0.20)))))
+```
+
+
+
+## Visualisation
+
+### 
+
+```{r,fig.asp=0.5}
+cran_code_out %>% 
+  ggplot(aes(c)) +
+  geom_bar()+
+  theme(axis.text.x = element_text(angle=30))+
+  scale_x_discrete(labels = c(seq(0,19.5,0.5), '20+'))+
+  labs(x='Comment per code line', y='count')
+```
+
+
+```{r,fig.asp=0.5}
+cran_code_out %>%
+  top_n(n = 25,wt = comm_code_ratio) %>%
+  ggplot(aes(fct_reorder(pkg_name,comm_code_ratio),comm_code_ratio))+
+  geom_col() +
+  coord_flip()+
+  labs(y='Comment line per code line', x='package',title = 'Top 25 packages with most commented R code')
+```
+
+
+```{r}
+cran_code_out %>%
+  top_n(n = 25,wt = 1/comm_code_ratio) %>%
+  ggplot(aes(fct_reorder(pkg_name,-comm_code_ratio),comm_code_ratio))+
+  geom_col() +
+  coord_flip()+
+    labs(y='Comment line per code line', x='package', 'Bot 25 packages with less commented R code')
+```
+
+
+```{r}
+top_down <- 
+  cran_top_downloads(when = c( "last-month"), count = 100)
+
+cran_code_out %>% 
+  filter(pkg_name %in% top_down$package) %>%
+  ggplot(aes(c)) +
+  geom_bar()+
+  theme(axis.text.x = element_text(angle=30))+
+    scale_x_discrete(labels = c(seq(0,19.5,0.5), '20+'))+
+  labs(x='Comment lines per code line', y='count', title='Number of comment lines per R code line for the 100 most downloaded packages')
+```
+

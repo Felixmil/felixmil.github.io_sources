@@ -1,0 +1,296 @@
+---
+title: TidyTuesday - Horror movie ratings
+author: Felix MIL
+date: '2019-10-27'
+slug: tidytuesday-horror-movie-ratings
+categories: []
+tags: []
+description: ''
+externalLink: ''
+series: []
+---
+
+
+
+```{r setup, include=F}
+knitr::opts_chunk$set(echo = TRUE, 
+                      warning=F, 
+                      fig.align = "center", 
+                      out.width = "60%", 
+                      message=F)
+```
+
+## Intro
+
+This post is a submission for Tidy Tuesday 2019 W43: [Horror Movies Ratings](https://github.com/rfordatascience/tidytuesday/tree/master/data/2019/2019-10-22)
+
+### Questions
+
+  1. When horror movies became an important part of the movie industry ? My intuition is that horror movies became important (money-wise) in the 2000's and something huge in the 2010's, is it true ? Is it still a growing part of the industry ?
+  2. I'm feeling like Northern America (especially the USA) is the most productive source of horror movies. Is it true ? Are the best movies produced in the USA ?
+  3. Is there any 'classical' settings in horror movies plots ? As I want to train my Natural Language Processing skills, this seems like an interesting and challenging question.
+  4. Is there any frequent location to shoot horror movies ? 
+
+## Preparation
+
+### Loading libraries
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(forcats)
+library(countrycode)
+library(ggdark)
+```
+
+### Getting the data
+```{r}
+horror_movies <- read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-22/horror_movies.csv")
+```
+
+### Cleaning & summarising data
+
+The provided data dictionnay is the following:
+
+| variable            | class       | description                           |
+| :------------------ | :---------- | :------------------------------------ |
+| title               | character   | Title of the movie                    |
+| genres              | character   | Movie Generes                         |
+| release_date        | character   | Movie release date - day-month-year   |
+| release_country     | character   | Release country                       |
+| movie_rating        | character   | MPAA Rating                           |
+| review_rating       | double      | Movie rating (0 - 10)                 |
+| movie_run_time      | character   | Movie run time (minutes)              |
+| plot                | character   | Short plot description (raw text)     |
+| cast                | character   | Cast                                  |
+| language            | character   | Language                              |
+| filming_locations   | character   | Filming location                      |
+| budget              | character   | Budget (US Dollars)                   |
+
+
+Let's take a look at the actual data.
+
+```{r}
+glimpse(horror_movies)
+```
+
+
+#### `release_date`
+
+Temporal data is crucial to see the trends of Horror movies over time. In the first rows of the dataset, the format seems to be `%d-%b-%y` so `lubridate::dmy()` should be appropriate to parse release dates.
+
+```{r}
+  horror_movies %>%
+  transmute(release_date,
+            release_date_asDate = dmy(release_date))
+```
+
+seems to be ok, except some release date only contains year, let's take care of them with `lubridate::parse_date_time()` which allow to pass several potentiel date formats.
+
+
+```{r}
+horror_movies_clean <- 
+  horror_movies %>%
+  mutate(release_date = parse_date_time(release_date, orders = c("dmy", "%y")))
+```
+
+Now we can get the time covered by the dataset:
+
+  - First date : `r min(horror_movies_clean$release_date)`
+  - Last date : `r max(horror_movies_clean$release_date)`
+  - Duration covered : `r as.duration(interval(min(horror_movies_clean$release_date), max(horror_movies_clean$release_date)))`
+
+Obviously, this dataset is not appropriate to observe trend on a large time scale. Question 1 cannot completely be answered. But we'll still be able to see the latest trends.
+
+#### `release_country`
+
+How many different countries are present in the dataset ?
+
+```{r}
+n_distinct(horror_movies$release_country)
+```
+What are they ?
+```{r}
+horror_movies %>%
+  distinct(release_country) %>%
+  arrange(release_country)
+```
+
+Apparently, there are no duplicated countries (potentially caused by typos or different denomination, for exemple UK & United Kingdom)
+
+Add a variable `release_contient`
+```{r}
+horror_movies_clean <- 
+  horror_movies_clean %>%
+  mutate(release_continent=countrycode(release_country,
+                                       origin = "country.name",
+                                       destination = 'continent'))
+```
+
+#### `review_rating`
+
+The dataset dictionnay indicates this variable is a double between 0 and 10.
+
+```{r}
+summary(horror_movies$review_rating)
+```
+
+Only `r round(summary(horror_movies$review_rating)["NA's"]/nrow(horror_movies),2)`% of movies are not reviewed
+
+#### `budget`
+  #TODO Install [fixer](https://rdrr.io/cran/fixerapi/)
+  #TODO create a https://fixer.io/signup/free account
+  #TODO Parse currency symbol to 'official' currency strings (€ -> 'EUR')
+  #TODO Pass date to get robust dollar consersions with [`fixer_convert`](https://rdrr.io/cran/fixerapi/man/fixer_convert.html)
+  
+  #TODO OR keep only the ones with $ notation
+
+```{r}
+horror_movies_clean <- 
+  horror_movies_clean %>%
+  mutate(budget_clean=as.numeric(str_remove(str_remove_all(budget,","), "\\$")))
+```
+
+## Observations
+
+### Number of movies per year
+```{r}
+horror_movies_clean %>%
+  ggplot(aes(x = as.factor(year(release_date)))) +
+  geom_bar(aes(fill=fct_infreq(as.factor(release_continent))),color='white')+
+  scale_fill_brewer(type = 'qual',palette = 3)
+```
+
+### Repartition of horror movies throughout the month of the years
+
+```{r}
+horror_movies_clean %>%
+  ggplot(aes(x= month(release_date,label = T,locale="en_US")))+
+  geom_bar(aes(fill=release_continent))+
+  facet_grid(fct_rev(as.factor(year(release_date)))~.)+
+  scale_fill_brewer(type = 'qual',palette = 3)+
+  labs(y='# of horror movies', 
+       x='month',
+       fill='continent:')
+```
+
+
+### Number of movies per country (top 20)
+```{r}
+horror_movies_clean %>%
+  ggplot(aes(fct_lump(fct_infreq(release_country),20)))+
+  geom_bar()+
+  theme(axis.text.x = element_text(angle=60, hjust = 1))
+```
+
+### Distribution of review ratings
+```{r}
+horror_movies_clean %>%
+  ggplot(aes(review_rating))+
+  geom_bar(binwidth = 0.2, color='white')
+```
+
+```{r}
+horror_movies_clean %>%
+  ggplot(aes(y=review_rating,x=release_continent))+
+  geom_boxplot(outlier.color = NA, fill=NA,width=0.4)+
+  geom_jitter(width = 0.1, alpha=0.2, color='firebrick')+
+  
+  dark_theme_gray()+
+  labs(y='Reviews',
+       x='Continent')
+```
+
+```{r}
+horror_movies_clean %>%
+  ggplot(aes(y=review_rating,x=release_continent))+
+  geom_jitter(width = 0.1, alpha=0.2, color='firebrick')+
+  geom_boxplot(outlier.color = NA, fill=NA,width=0.4)+
+  dark_theme_gray()+
+  labs(y='Reviews',
+       x='Continent')
+```
+
+
+
+### Budgets
+
+```{r}
+horror_movies_clean %>%
+filter(!is.na(review_rating),
+        budget_clean > 0,
+       release_continent=='Americas') %>%
+  ggplot(aes(budget_clean,review_rating))+
+  geom_point(aes(color=release_continent))+
+  scale_color_brewer(type='qual',palette=3)+
+  coord_flip()
+```
+
+```{r}
+horror_movies_clean %>%
+  group_by(release_continent, m=month(release_date, label = T, locale='EN_US')) %>%
+  transmute(med_budget = median(budget_clean,na.rm = T)) %>%
+  ggplot(aes(m, med_budget, color=release_continent))+
+  geom_point()+
+  dark_theme_grey()+
+  labs(y='Median Budget', x='Month',color='Continent')+
+  scale_y_continuous()
+```
+
+## Take Away
+
+More movies are releases in October but budgets for theses movies are generally lower. Reviews are still higher ?
+
+
+```{r}
+horror_movies_clean %>%
+  filter(!is.na(budget_clean)) %>%
+  ggplot(aes(month(release_date,label = T,locale = 'EN_US'))) +
+  geom_bar(aes(fill=month(release_date,label = T,locale = 'EN_US')))+
+  dark_theme_gray()+
+  scale_fill_viridis_d(option='Plasma',direction = -1,begin=0.1, end = 0.5)+
+  guides(fill=FALSE)+
+  labs(x='Months', y='# of movies')
+```
+
+```{r}
+horror_movies_clean %>%
+  filter(!is.na(budget_clean)) %>%
+  mutate(m = month(release_date,label = T,locale = 'EN_US')) %>%
+  ggplot(aes(m,review_rating)) +
+  geom_violin(aes(color=m),trim = TRUE)+
+  geom_dotplot(
+    aes(color= m,
+        fill = m),
+    binaxis = "y", 
+    stackdir = "center",
+    dotsize = 0.4
+  )+
+  dark_theme_gray()+
+  scale_fill_viridis_d(option='Plasma',direction = -1,begin=0.1, end = 0.5)+
+  scale_color_viridis_d(option='Plasma',direction = -1,begin=0.1,end = 0.5)+
+  guides(fill=FALSE, color = FALSE)+
+  geom_pointrange(stat = "summary",
+    fun.y = median, 
+               fun.ymin = function(z) { quantile(z,0.25) }, 
+                fun.ymax =function(z) {quantile(z,0.75)},
+               color='firebrick')+
+  labs(x='Months',y='Reviews')
+```
+
+
+```{r}
+horror_movies_clean %>%
+  filter(!is.na(budget_clean)) %>%
+  mutate(m = month(release_date,label = T,locale = 'EN_US')) %>%
+  ggplot() +
+  ggridges::geom_density_ridges(aes(x = budget_clean,y=fct_rev(as.factor(m)), fill=m), color='black')+
+  scale_x_log10()+
+  dark_theme_gray()+
+  scale_fill_viridis_d(option='Plasma',direction = -1,begin=0.1, end = 0.5)+
+  scale_color_viridis_d(option='Plasma',direction = -1,begin=0.1,end = 0.5)+
+  guides(fill=FALSE, color = FALSE)+
+  labs(x='log(Budgets)',y='Months')
+```
+
+
